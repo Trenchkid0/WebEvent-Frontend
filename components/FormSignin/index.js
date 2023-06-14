@@ -1,0 +1,121 @@
+import React, { useState,useEffect } from 'react';
+import Button from '../Button';
+import TextInput from '../TextInput';
+import { useRouter } from 'next/router';
+import { postData } from '../../utils/fetchData';
+import Cookies from 'js-cookie';
+import { toast } from 'react-toastify';
+import Link from 'next/link';
+import { getData } from '../../utils/fetchData';
+
+
+export default function FormSignin({data}) {
+  // console.log(data)
+  const router = useRouter();
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    
+  });
+  console.log(form.email);
+
+  const [userInfo, setUserInfo] = useState([])
+
+
+  useEffect(() => {
+    setUserInfo(data)
+    
+      // data.map((data)=>{
+      //   // console.log(data);
+      //   setUserInfo(data._id)
+      // })
+  }, [])
+  
+
+
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await postData('/api/v1/auth/signin', form);
+
+      toast.success('berhasil signin', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      Cookies.set('token', res.data.token);
+
+
+      userInfo.forEach((info) => {
+        if(form.email === info.email) {
+          router.push(`/navbar/${info._id}`);
+        }
+      })
+      
+     
+    } catch (err) {
+      toast.error(err?.response?.data?.msg || 'Internal server error', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  return (
+    <form className='form-login d-flex flex-column mt-4 mt-md-0 p-30'>
+      <TextInput
+        label={'Email'}
+        type={'email'}
+        name='email'
+        value={form.email}
+        placeholder={'semina@bwa.com'}
+        onChange={handleChange}
+      />
+
+      <TextInput
+        label={'Password (6 characters)'}
+        type={'password'}
+        name='password'
+        value={form.password}
+        placeholder='Type your password'
+        onChange={handleChange}
+      />
+
+      <div className='d-grid mt-2 gap-4'>
+           
+          {/* {data.map((data)=>{
+           { console.log(data._id)}
+                <Link
+                    href={`/detail/${data._id}`}
+                    className='stretched-link'
+                ></Link>   
+              })}  */}
+            <Button variant={'btn-green'} action={() => handleSubmit()}>
+              Sign In
+            </Button>
+
+
+
+        <Button action={() => router.push('/signup')} variant='btn-navy'>
+          Create New Account
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+
+
