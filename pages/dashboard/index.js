@@ -18,7 +18,7 @@ export default function Dashboard({ data}) {
       </Head>
 
       <section className='bg-navy'>
-        <Navbar />
+        {/* <Navbar /> */}
       </section>
 
       <section className='bg-navy'>

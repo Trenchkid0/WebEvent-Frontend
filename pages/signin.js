@@ -37,29 +37,10 @@ export async function getServerSideProps(context) {
   const req = await getData('api/v1/participants');
 
   const res = req.data;
-  // console.log(res)
 
-  // if (token) {
-  //   return {
-  //     redirect: {
-  //       destination: '/',
-  //       permanent: false,
-  //     },
-  //   };
-  // }
 
   return {
     props: {data: res},
   };
 }
 
-// export async function getServerSideProps(context) {
-//   const req = await getData('api/v1/participants');
-
-//   const res = req.data;
-//   console.log(res)
-
-//   return {
-//     props: { data: res },
-//   };
-// }
